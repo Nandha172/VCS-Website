@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@theme {
+  /* Palette — wine is the logo disc's maroon (#8B3031) taken a touch darker, so large areas read maroon, not red */
+  --color-ivory: #faf7f2;
+  --color-sand: #f1e9dd;
+  --color-ink: #1f1b18;
+  --color-ink-muted: #5f564f;
+  --color-wine: #7c2b2c;
+  --color-wine-deep: #5e1d21;
+  --color-gold: #c2a36b;
+  --color-gold-light: #e8d8ae;
+  --color-gold-deep: #a88850;
+  --color-leaf: #3e5b3a;
+
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type scale */
+  --text-display: clamp(2.625rem, 1.6rem + 4.6vw, 5rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.02em;
+  --text-h2: clamp(2.125rem, 1.5rem + 2.7vw, 3.5rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.015em;
+  --text-h3: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  --text-h3--line-height: 1.2;
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --text-lead--line-height: 1.7;
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.24em;
+
+  --radius-card: 12px;
+  --radius-control: 10px;
+
+  /* Soft, layered and slightly warm, so cards float rather than sit in a grey haze */
+  --shadow-card: 0 1px 2px rgb(31 27 24 / 0.05), 0 6px 14px -3px rgb(31 27 24 / 0.06), 0 22px 40px -14px rgb(94 29 33 / 0.15);
+  --shadow-lift: 0 2px 4px rgb(31 27 24 / 0.05), 0 12px 24px -6px rgb(31 27 24 / 0.09), 0 36px 60px -18px rgb(94 29 33 / 0.24);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    /* Tap feedback comes from the components' own :active styles */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background-color: var(--color-wine);
+    color: var(--color-ivory);
+  }
+
+  /* Compact (scrolled) header height — keep in sync with --bar-h in Header.tsx */
+  :root {
+    --header-h: 3.75rem;
+
+    @media (min-width: 64rem) {
+      --header-h: 4.25rem;
+    }
+  }
+
+  /* Nav links land with the section heading clear of the sticky header */
+  section,
+  [id] {
+    scroll-margin-top: var(--header-h);
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    /* Cormorant defaults to old-style figures, which make "01" read as "o1" */
+    font-variant-numeric: lining-nums;
+    /* Even line lengths, so a heading never leaves one word alone on its last line */
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus ring: wine on light surfaces, light gold inside .focus-on-dark */
+  :focus-visible {
+    outline: 2px solid var(--focus-color, var(--color-wine));
+    outline-offset: 3px;
+  }
+
+  .focus-on-dark {
+    --focus-color: var(--color-gold-light);
+  }
+
+  .focus-on-light {
+    --focus-color: var(--color-wine);
+  }
+
+  /* Gentle fade/slide-in as a section scrolls into view. Pure CSS: browsers without
+     scroll-driven animations (and anyone who prefers reduced motion) just see the content. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 28%;
+      }
+    }
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
